@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon index.js",
     "test": "jest --watch",
-    "start": "node index.js"
+    "start": "node index.js",
+    "copy-env": "cp .env.example .env"
   },
   "author": "Laney Smith",
   "license": "ISC",

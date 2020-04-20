@@ -1,22 +1,28 @@
-# Covid-19 Map (WIP)
+# Covid-19 Map API
 
-An interactive map displaying cumulative Covid-19 cases and deaths for US counties. See [the NY Times covid-19-data project](https://github.com/nytimes/covid-19-data) for more information on the data.
+This is the API and database source code for [https://covid.laney.tech](https://covid.laney.tech/), an interactive map displaying cumulative Covid-19 cases and deaths for US counties. The front end source code can be found at [https://github.com/laneysmith/covid-map](https://github.com/laneysmith/covid-map).
 
-The app is deployed at [https://covid.laney.tech](https://covid.laney.tech//).
+Data from [the NY Times covid-19-data project](https://github.com/nytimes/covid-19-data), based on reports from state and local health agencies.
 
-![covid-map-preview](https://user-images.githubusercontent.com/11357045/79015158-1a15e080-7b21-11ea-9370-11cae45e2f36.gif)
+## Running the App Locally
 
-## Quick start
+**Prerequisites**
+1. You must have postgres installed on your machine ([download here](https://www.postgresql.org/download/)).
 
-1. Install all project dependencies: `npm install`
-1. Run `npm run copy-env` to copy the `client/.env.local.example` contents into a new `client/.env.local` file. Replace `YOUR_TOKEN_HERE` with your Mapbox token.
-1. Start the client and server: `npm start`
-1. Visit `http://localhost:3000` in your browser.
+**Starting the App**
+1. Install project dependencies: `yarn install`
+1. Run `yarn copy-env` to copy the `.env.example` contents into a new `.env` file.
+1. Create a new postgres database called `covid_19`:
+   ```bash
+   psql # enter the interactive postgres terminal
+   CREATE DATABASE covid_19; # create the database; if you choose to name it anything other than covid_19, make sure you update the DATABASE_NAME env variable to match.
+   \l # list all databases; confirm that covid_19 is in the list
+   \q # exit postgres shell
+   ```
+1. Run `knex migrate:latest` (from the project root, _not_ in psql) to run the migrations. This will add a table to the postgres database you created.
+1. Start the server: `yarn start`
+1. You should now be able to run `curl -i http://localhost:5000/covid` in your terminal to retrieve the latest data.
 
 ## Resources
 
 - [NY Times Covid-19 Data](https://github.com/nytimes/covid-19-data)
-- [Create React App](https://github.com/facebook/create-react-app)
-- [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/)
-- [Hihayk Color Scale Generator](https://hihayk.github.io/scale/)
-- [Pixel Perfect svg icons](https://www.flaticon.com/authors/pixel-perfect)
