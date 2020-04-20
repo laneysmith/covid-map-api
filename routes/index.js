@@ -1,6 +1,5 @@
 const express = require('express');
 const fetch = require('node-fetch');
-require('dotenv').config();
 
 const db = require('../db/api');
 const transformData = require('../utils/transformData');
@@ -22,24 +21,20 @@ router.get('/', async (request, response, next) => {
   console.log('responseStatus :', responseStatus);
 
   if (responseStatus === 304) {
+    // No changes to data, return current data
     console.log('No changes to data, returning current data.');
     response.json(currentRecord.data);
   } else if (responseStatus === 200) {
+    // Fetch new data
     console.log('Retrieving new data...');
     const newEtag = nytDataResponse.headers.get('etag');
     const responseText = await nytDataResponse.text();
     const transformedData = await transformData(responseText);
     console.log('newEtag :', newEtag);
 
-    if (currentRecord === undefined) {
-      console.log('Creating new record...');
-      await db.createDataAndEtagRecord(transformedData, newEtag);
-      response.json(transformedData);
-    } else {
-      console.log('Updating record...');
-      await db.updateDataAndEtagRecord(transformedData, newEtag);
-      response.json(transformedData);
-    }
+    // Add/update new data in db
+    await db.upsertRecord({ currentEtag, newData: transformedData, newEtag });
+    response.json(transformedData);
   } else if (currentRecord.data) {
     console.log('Error retrieving new data, returning old data instead.');
     response.json(currentRecord.data);

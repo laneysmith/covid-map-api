@@ -4,17 +4,15 @@ module.exports = {
   getCurrentRecord: () => {
     return knex('cases_and_deaths').select().first();
   },
-  updateDataAndEtagRecord: (data, etag) => {
-    return knex('cases_and_deaths')
-      .select()
-      .first()
-      .then((foundRecord) => {
-        console.log('foundRecord :', foundRecord);
-        console.log('etag :', etag);
-        knex('cases_and_deaths').where({ id: foundRecord.id }).update({ etag, data }, ['data']);
-      });
-  },
-  createDataAndEtagRecord: (data, etag) => {
-    return knex('cases_and_deaths').insert({ data, etag }).returning('data');
+  upsertRecord: ({ currentEtag, newData, newEtag }) => {
+    if (currentEtag) {
+      console.log('Updating record...');
+      return knex('cases_and_deaths')
+        .where({ etag: currentEtag })
+        .update({ etag: newEtag, data: newData }, ['etag', 'data']);
+    } else {
+      console.log('Creating new record...');
+      return knex('cases_and_deaths').insert({ data: newData, etag: newEtag }).returning('data');
+    }
   },
 };
