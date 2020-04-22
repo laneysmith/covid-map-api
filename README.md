@@ -16,12 +16,23 @@ Data from [the NY Times covid-19-data project](https://github.com/nytimes/covid-
    ```bash
    psql # enter the interactive postgres terminal
    CREATE DATABASE covid_19; # create the database; if you choose to name it anything other than covid_19, make sure you update the DATABASE_NAME env variable to match.
-   \l # list all databases; confirm that covid_19 is in the list
+   \l # list all databases; confirm that covid_19 exists
    \q # exit postgres shell
    ```
-1. Run `knex migrate:latest` (from the project root, _not_ in psql) to run the migrations. This will add a table to the postgres database you created.
+1. Run `$ knex migrate:latest --env development` (from the project root, _not_ in psql) to run the migrations. This will add a table to the postgres database you created.
 1. Start the server: `yarn start`
 1. You should now be able to run `curl -i http://localhost:5000/covid` in your terminal to retrieve the latest data.
+
+## Testing
+
+1. Create a new postgres test database called `covid_19_test`:
+   ```bash
+   psql # enter the interactive postgres terminal
+   CREATE DATABASE covid_19_test; # create the test database
+   \l # list all databases; confirm that covid_19_test exists
+   \q # exit postgres shell
+   ```
+1. Run the tests: `yarn test`
 
 ## Resources
 
