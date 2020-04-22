@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "test": "cross-env NODE_ENV=test jest --forceExit",
     "start": "node index.js",
+    "start:dev": "nodemon index.js",
+    "test": "cross-env NODE_ENV=test jest --forceExit",
     "copy-env": "cp .env.example .env"
   },
   "author": "Laney Smith",
@@ -17,7 +17,6 @@
     "csvtojson": "^2.0.10",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "fs": "^0.0.1-security",
     "knex": "^0.20.13",
     "node-fetch": "^2.6.0",
     "pg": "^8.0.2"

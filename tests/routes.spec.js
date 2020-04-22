@@ -44,8 +44,8 @@ describe('API routes', () => {
         );
         expect(res.body.maxCases).toEqual(17);
         expect(res.body.maxDeaths).toEqual(0);
-        expect(fetchSpy).toHaveBeenCalled();
-        expect(getCurrentRecordSpy).toHaveBeenCalled();
+        expect(fetchSpy).toHaveBeenCalledTimes(1);
+        expect(getCurrentRecordSpy).toHaveBeenCalledTimes(1);
         expect(upsertRecordSpy).not.toHaveBeenCalled();
       });
 
@@ -59,8 +59,8 @@ describe('API routes', () => {
 
         expect(res.status).toEqual(500);
         expect(res.body.message).toEqual('Failed to retrieve Covid-19 data.');
-        expect(fetchSpy).toHaveBeenCalled();
-        expect(getCurrentRecordSpy).toHaveBeenCalled();
+        expect(fetchSpy).toHaveBeenCalledTimes(1);
+        expect(getCurrentRecordSpy).toHaveBeenCalledTimes(1);
         expect(upsertRecordSpy).not.toHaveBeenCalled();
       });
     });
@@ -82,8 +82,8 @@ describe('API routes', () => {
         );
         expect(res.body.maxCases).toEqual(17);
         expect(res.body.maxDeaths).toEqual(0);
-        expect(fetchSpy).toHaveBeenCalled();
-        expect(getCurrentRecordSpy).toHaveBeenCalled();
+        expect(fetchSpy).toHaveBeenCalledTimes(1);
+        expect(getCurrentRecordSpy).toHaveBeenCalledTimes(1);
         expect(upsertRecordSpy).not.toHaveBeenCalled();
       });
     });
@@ -127,8 +127,9 @@ describe('API routes', () => {
         expect(res.body.data).toEqual(transformedData);
         expect(res.body.maxCases).toEqual(23);
         expect(res.body.maxDeaths).toEqual(4);
-        expect(fetchSpy).toHaveBeenCalled();
-        expect(getCurrentRecordSpy).toHaveBeenCalled();
+        expect(fetchSpy).toHaveBeenCalledTimes(1);
+        expect(getCurrentRecordSpy).toHaveBeenCalledTimes(1);
+        expect(getCurrentRecordSpy).toHaveBeenCalledTimes(1);
         expect(upsertRecordSpy).toHaveBeenCalledWith({
           currentEtag: 'W/"2dcd4781a59679ce1ea62cb50670bb547c169ad00ce867b711fffbdd1540a61e"',
           newEtag: 'W/"some-new-etag"',
