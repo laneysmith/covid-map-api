@@ -1,7 +1,8 @@
 const request = require('supertest');
 const fetch = require('node-fetch');
 const { Response, Headers } = require('node-fetch');
-const fs = require('fs');
+const { readFileSync } = require('fs');
+const { join } = require('path');
 
 const server = require('../index');
 const knex = require('../db/knex');
@@ -92,7 +93,7 @@ describe('API routes', () => {
       it('should update database and return new data', async () => {
         await migrateAndSeedDatabase();
         const headers = new Headers({ ETag: 'W/"some-new-etag"' });
-        const dataAsString = fs.readFileSync(__dirname + '/test_data.csv', 'utf8').toString();
+        const dataAsString = readFileSync(join(__dirname, 'test_data.csv'), 'utf8').toString();
         const responsePromise = Promise.resolve({
           status: 200,
           headers,
