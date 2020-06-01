@@ -4,6 +4,7 @@ exports.seed = (knex) =>
     .then(() =>
       knex('cases_and_deaths').insert([
         {
+          last_fetched_timestamp: '2020-05-25T14:42:12.000Z',
           etag: 'W/"2dcd4781a59679ce1ea62cb50670bb547c169ad00ce867b711fffbdd1540a61e"',
           data: {
             data: {

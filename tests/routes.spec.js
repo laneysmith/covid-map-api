@@ -25,15 +25,36 @@ describe('API routes', () => {
   });
 
   describe('GET /covid', () => {
+    const fetchSpy = jest.spyOn(fetch, 'Promise');
     const getCurrentRecordSpy = jest.spyOn(db, 'getCurrentRecord');
     const upsertRecordSpy = jest.spyOn(db, 'upsertRecord');
+
+    describe('when last_fetched_timestamp is less than 3 hours ago', () => {
+      it('should return current record from database', async () => {
+        await migrateAndSeedDatabase();
+        const dateMock = jest
+          .spyOn(global.Date, 'now')
+          .mockImplementation(() => new Date('2020-05-25T15:42:12.000Z').valueOf());
+
+        const res = await request(server).get('/covid');
+
+        expect(res.status).toEqual(200);
+        expect(res.body.data).toEqual(
+          expect.objectContaining({
+            '2020-03-03': expect.any(Object),
+          })
+        );
+        expect(res.body.maxCases).toEqual(17);
+        expect(res.body.maxDeaths).toEqual(0);
+        expect(fetchSpy).not.toHaveBeenCalled();
+        dateMock.mockRestore();
+      });
+    });
 
     describe('when conditional request to github returns 500', () => {
       it('should return current record from database', async () => {
         await migrateAndSeedDatabase();
-        const fetchSpy = jest
-          .spyOn(fetch, 'Promise')
-          .mockImplementationOnce(() => Promise.resolve({ status: 500 }));
+        fetchSpy.mockImplementationOnce(() => Promise.resolve({ status: 500 }));
 
         const res = await request(server).get('/covid');
 
@@ -52,9 +73,7 @@ describe('API routes', () => {
 
       it('should return 500 error if database is empty', async () => {
         await migrateDatabase();
-        const fetchSpy = jest
-          .spyOn(fetch, 'Promise')
-          .mockImplementationOnce(() => Promise.resolve({ status: 500 }));
+        fetchSpy.mockImplementationOnce(() => Promise.resolve({ status: 500 }));
 
         const res = await request(server).get('/covid');
 
@@ -69,9 +88,7 @@ describe('API routes', () => {
     describe('when conditional request to github returns 304', () => {
       it('should return current record from database', async () => {
         await migrateAndSeedDatabase();
-        const fetchSpy = jest
-          .spyOn(fetch, 'Promise')
-          .mockImplementation(() => Promise.resolve({ status: 304 }));
+        fetchSpy.mockImplementation(() => Promise.resolve({ status: 304 }));
 
         const res = await request(server).get('/covid');
 
@@ -99,9 +116,7 @@ describe('API routes', () => {
           headers,
           text: () => dataAsString,
         });
-        const fetchSpy = jest
-          .spyOn(fetch, 'Promise')
-          .mockImplementation(() => Promise.resolve(responsePromise));
+        fetchSpy.mockImplementation(() => Promise.resolve(responsePromise));
 
         const res = await request(server).get('/covid');
 
